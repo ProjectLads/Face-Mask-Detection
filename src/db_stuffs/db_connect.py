@@ -14,10 +14,10 @@ uri =f"DATABASE={database};HOSTNAME={hostname};PORT={port};SECURITY=SSL;SSLServe
 def insert_into_image_table(mask_image, unmask_image, user_id):
     import convert , cv2 
     image_mask = cv2.imread(mask_image) if (mask_image is not None) else None
-    text1 = convert.image_to_text(image_mask)
+    text1 = convert.image_to_text(image_mask) if (image_mask is not None) else None
     
     image_unmask = cv2.imread(unmask_image) if (unmask_image is not None) else None
-    text2 = convert.image_to_text(image_unmask) 
+    text2 = convert.image_to_text(image_unmask) if (image_unmask is not None) else None
     
     query  = '''INSERT INTO 
     USER_IMAGE(MASK_IMAGE , UNMASK_IMAGE , USER_ID) 
@@ -26,7 +26,7 @@ def insert_into_image_table(mask_image, unmask_image, user_id):
     parameters = ((text1 , text2, user_id) , )
     
     statement = ibm_db.prepare(conn1 , query)
-    ibm_db_user_table_executeibm_db.execute_many(statement , parameters)
+    ibm_db.execute_many(statement , parameters)
 
 
 def insert_into_user_table(user_id, name, country_code, phone_number, email_id, address):
@@ -61,7 +61,7 @@ try:
     
     user_id_uuid =str(uuid.uuid1())
     insert_into_user_table(user_id_uuid, 'a', '+91', 1234567895, 'b', 'c')
-    insert_into_image_table('D:\Projectlads\Face-Mask-Detection\src\db_stuffs\mask.jpg', None, user_id_uuid)
+    insert_into_image_table('D:\\Projectlads\\Face-Mask-Detection\\src\\db_stuffs\\mask.jpg', 'D:\\Projectlads\\Face-Mask-Detection\\src\\db_stuffs\\unmask.jpeg', user_id_uuid)
 
     print("----------------")
     ibm_db.close(conn1)
