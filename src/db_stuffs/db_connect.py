@@ -14,6 +14,7 @@ uri =f"DATABASE={database};HOSTNAME={hostname};PORT={port};SECURITY=SSL;SSLServe
 def insert_into_image_table(mask_image, unmask_image, user_id):
     import convert , cv2 
     image_mask = cv2.imread(mask_image) if (mask_image is not None) else None
+    print(image_mask)
     text1 = convert.image_to_text(image_mask) if (image_mask is not None) else None
     
     image_unmask = cv2.imread(unmask_image) if (unmask_image is not None) else None
