@@ -4,10 +4,10 @@ DATA_DIR = "data.csv"
 IMAGE_MASK_DIR = "D:\Projectlads\Face-Mask-Detection\src\db_stuffs\images\mask"
 
 IMAGE_UNMASK_DIR = "D:\Projectlads\Face-Mask-Detection\src\db_stuffs\images\withoutMask" 
-MASK_DIR = "/home/rupam/Face-Mask-Detection/src/db_stuffs/images/mask"
+#MASK_DIR = "/home/rupam/Face-Mask-Detection/src/db_stuffs/images/mask"
 
 
-UNMASK_DIR = "/home/rupam/Face-Mask-Detection/src/db_stuffs/images/withoutMask" 
+#UNMASK_DIR = "/home/rupam/Face-Mask-Detection/src/db_stuffs/images/withoutMask" 
 
 info =[]
 image = []
@@ -39,15 +39,15 @@ with open(DATA_DIR) as data:
     
     info = info[1:]
     for row in info:
-      #  image.append((IMAGE_MASK_DIR + '\\' + row[0] + '.jpeg', IMAGE_UNMASK_DIR + '\\' + row[0] + '.jpeg'))
-        image.append((MASK_DIR + '/' + row[0] + '.jpeg', UNMASK_DIR + '/' + row[0] + '.jpeg'))
+        image.append((IMAGE_MASK_DIR + '\\' + row[0] + '.jpeg', IMAGE_UNMASK_DIR + '\\' + row[0] + '.jpeg'))
+      #  image.append((MASK_DIR + '/' + row[0] + '.jpeg', UNMASK_DIR + '/' + row[0] + '.jpeg'))
 
     #print(image)
 
 for i in image:
     #print(i[0])
 
-    img = cv2.imread(i[1])
+    img = cv2.imread(i[0])
     img_ret = detect_face(img)
     #print(img_ret)
     
