@@ -8,6 +8,7 @@ def insert_into_image_table(text1, text2, user_id, conn1):
     VALUES(? , ? , ?)'''
     
     parameters = ((text1 , text2, user_id) , )
+    print(len(text1), len(text2))
     
     statement = ibm_db.prepare(conn1 , query)
     ibm_db.execute_many(statement , parameters)
@@ -55,10 +56,12 @@ def read_path(conn1, conn2):
         info = info[1:]
         for row in info:
             name, country_code, phone_number, email_id, address = row[0], row[1], row[2], row[3], row[4]
+            print(name, country_code, phone_number, email_id, address)
             img_mask = cv2.imread(IMAGE_MASK_DIR + '\\' + row[0] + '.jpeg')
             img_unmask = cv2.imread(IMAGE_UNMASK_DIR + '\\' + row[0] + '.jpeg')
             img_mask = cv2.resize(detect_face(img_mask),(224,224))
             img_unmask = cv2.resize(detect_face(img_unmask),(224,224))
+            print(img_mask.shape, img_unmask.shape)
             text1 = convert.image_to_text(img_mask) if (img_mask is not None) else None
             text2 = convert.image_to_text(img_unmask) if (img_unmask is not None) else None
             user_id_uuid =str(uuid.uuid1())
