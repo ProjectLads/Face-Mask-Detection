@@ -1,10 +1,10 @@
 import cv2 
 import matplotlib.pyplot as plt
-DATA_DIR = "D:\Projectlads\Face-Mask-Detection\src\db_stuffs\data.csv"
-IMAGE_MASK_DIR = "D:\Projectlads\Face-Mask-Detection\src\db_stuffs\images\mask"
+DATA_DIR = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/data.csv"
+IMAGE_MASK_DIR = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/images/mask"
 
-IMAGE_UNMASK_DIR = "D:\Projectlads\Face-Mask-Detection\src\db_stuffs\images\withoutMask"
- 
+IMAGE_UNMASK_DIR = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/images/withoutMask"
+
 info =[]
 image = []
 
