@@ -1,14 +1,10 @@
 import cv2 
 import matplotlib.pyplot as plt
-DATA_DIR = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/data.csv"
-IMAGE_MASK_DIR = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/images/mask"
+DATA_DIR = "D:\Projectlads\Face-Mask-Detection\src\db_stuffs\data.csv"
+IMAGE_MASK_DIR = "D:\Projectlads\Face-Mask-Detection\src\db_stuffs\images\mask"
 
-IMAGE_UNMASK_DIR = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection\src/db_stuffs/images/withoutMask" 
-MASK_DIR = "/home/rupam/Face-Mask-Detection/src/db_stuffs/images/mask"
-
-
-UNMASK_DIR = "/home/rupam/Face-Mask-Detection/src/db_stuffs/images/withoutMask" 
-
+IMAGE_UNMASK_DIR = "D:\Projectlads\Face-Mask-Detection\src\db_stuffs\images\withoutMask"
+ 
 info =[]
 image = []
 
@@ -40,7 +36,7 @@ with open(DATA_DIR) as data:
     info = info[1:]
     for row in info:
         image.append((IMAGE_MASK_DIR + '\\' + row[0] + '.jpeg', IMAGE_UNMASK_DIR + '\\' + row[0] + '.jpeg'))
-        #image.append((MASK_DIR + '/' + row[0] + '.jpeg', UNMASK_DIR + '/' + row[0] + '.jpeg'))
+
 
     #print(image)
 
