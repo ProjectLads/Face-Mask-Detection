@@ -1,6 +1,7 @@
 import ibm_db 
 import os
 import uuid 
+import data
 
 password = "XIho3BxFB7Z4u2Hj"
 username = "nlz47787"
@@ -10,42 +11,6 @@ path =  'D:\Projectlads\Face-Mask-Detection\src\db_stuffs\certificate.crt'
 port = 30120
 
 uri =f"DATABASE={database};HOSTNAME={hostname};PORT={port};SECURITY=SSL;SSLServerCertificate={path};UID={username};PWD={password}" 
-
-def insert_into_image_table(mask_image, unmask_image, user_id):
-    import convert , cv2 
-    image_mask = cv2.imread(mask_image) if (mask_image is not None) else None
-    print(image_mask)
-    text1 = convert.image_to_text(image_mask) if (image_mask is not None) else None
-    
-    image_unmask = cv2.imread(unmask_image) if (unmask_image is not None) else None
-    text2 = convert.image_to_text(image_unmask) if (image_unmask is not None) else None
-    
-    query  = '''INSERT INTO 
-    USER_IMAGE(MASK_IMAGE , UNMASK_IMAGE , USER_ID) 
-    VALUES(? , ? , ?)'''
-    
-    parameters = ((text1 , text2, user_id) , )
-    
-    statement = ibm_db.prepare(conn1 , query)
-    ibm_db.execute_many(statement , parameters)
-
-
-def insert_into_user_table(user_id, name, country_code, phone_number, email_id, address):
-    
-    
-    query  = '''Insert into 
-    user_info(UID, Name,Country_code,Phone_number,Email_id,Address) 
-    values(?, ?, ?, ?, ?, ?);'''
-    
-    parameters = ((user_id, name, country_code, phone_number, email_id, address) , )
-    
-    statement = ibm_db.prepare(conn1 , query)
-    ibm_db.execute_many(statement , parameters)
-    print(user_id,'Hello')
-
-
-
-
 
 try:
     conn1 = ibm_db.connect(uri , '' , '')
@@ -60,10 +25,8 @@ try:
     for table in t:
         print(table['TABLE_NAME'])
     
-    user_id_uuid =str(uuid.uuid1())
-    insert_into_user_table(user_id_uuid, 'a', '+91', 1234567895, 'b', 'c')
-    insert_into_image_table('D:\\Projectlads\\Face-Mask-Detection\\src\\db_stuffs\\mask.jpg', 'D:\\Projectlads\\Face-Mask-Detection\\src\\db_stuffs\\unmask.jpeg', user_id_uuid)
-
+    data.read_path(conn1, conn2)
+    
     print("----------------")
     ibm_db.close(conn1)
     print("Connection closed")
