@@ -1,55 +1,57 @@
-import cv2
-import matplotlib.pyplot as plt
-import data, base64
-import numpy as np
+from PIL import Image as image 
+ 
+import base64
 import requests 
+import os 
 
-#my_url = https://faceapi.mxface.ai/api/face/verify
-my_url_token = 'I39243ua8sbTpjaN2632'
+def face_match(image1 , image2 , apikey):
+    PATH1 = os.getcwd() + "/tmp/image1.jpeg"
+    PATH2 = os.getcwd() + "/tmp/image2.jpeg"
+
+    image.fromarray(image1).save(PATH1)
+    image.fromarray(image2).save(PATH2)
+
+    
+    img1 = open(PATH1 , 'rb').read()
+    img2 = open(PATH2 , 'rb').read()
+
+    
+    img1string = base64.b64encode(img1).decode("utf-8")
+    img2string = base64.b64encode(img2).decode("utf-8")
+
+    os.remove(PATH1)
+    os.remove(PATH2)
+
+    headers = { 
+        "Content-Type" : "application/json",
+
+        "Subscriptionkey" : apikey ,
+
+        }
+    data1 = {}
+
+    data1["encoded_image1"]  =  img1string
+    data1["encoded_image2"] =   img2string
+
+    url = f'https://faceapi.mxface.ai/api/face/verify'
+
+
+    resp = requests.post(url , headers=headers , json=data1)
+    if resp.status_code == 200 : 
+        return True if (resp.json()["confidence"] > 0.50) else False
+    else:
+        print(resp.reason)
 
 
 
-img1 = cv2.imread("C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/image1.jpeg")
-img2 = cv2.imread("C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/image2.jpg")
-#print(img1)
-#print(img2)
 
 
-img1 = data.detect_face(img1)
-img2 = data.detect_face(img2)
 
-img1 = cv2.resize(img1 ,  (31 , 31))
-img2 = cv2.resize(img2 ,  (31 , 31))
 
-img1string = base64.b64encode(np.ascontiguousarray(img1))
-img2string = base64.b64encode(np.ascontiguousarray(img2))
 
-#print(img1string)
 
-headers = { 
-"Content-Type" : "application/json",
+apikey = "I39243ua8sbTpjaN2632"
 
-"Subscriptionkey" : "I39243ua8sbTpjaN2632" ,
-"encoded_image1" : img1string ,
-"encoded_image2" : img2string
-}
+print(face_match(img1 , img2 , apikey))
 
-#data = {
-#"encoded_image1" : img1string ,
-#"encoded_image2" : img2string
-#}
 
-plt.imshow(img1)
-plt.show()
-input()
-plt.imshow(img2)
-plt.show()
-url = f'https://faceapi.mxface.ai/api/face/verify'
-print(len(url))
-
-#?encoded_image1={img1string}&encoded_image2={img2string}
-
-#resp = requests.post(url , headers=headers)
-#print(resp.status_code)
-#print(resp.reason)
-print(headers)
