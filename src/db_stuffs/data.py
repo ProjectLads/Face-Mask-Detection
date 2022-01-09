@@ -81,16 +81,4 @@ def read_path(conn1, conn2):
 
 
 
-#insert_into_image_table(mask_image, unmask_image, user_id)
-#insert_into_user_table(user_id, name, country_code, phone_number, email_id, address)
-'''for i in image:
-        img = cv2.imread(i(0))
-        img = cv2.imread(i(1))
-        img_ret = detect_face(img)
-        img_ret = cv2.resize(img_ret , (224 , 224))
-    return img_ret
-    plt.imshow(cv2.cvtColor(img_ret, cv2.COLOR_BGR2RGB))
-    plt.show()
-    input()
-'''    
-    
+
