@@ -1,4 +1,5 @@
 import ibm_db
+from numpy.lib.type_check import imag
 import convert
 import matplotlib.pyplot as plt
 
@@ -29,6 +30,8 @@ conn1 = ibm_db.connect(uri , '' , '')
 statement = ibm_db.prepare(conn1 , query)
 ibm_db.execute(statement)
 result_set = ibm_db.fetch_tuple(statement)
+_,axis = plt.subplots(6, 2) #54 number line same
+image_number = 0
 while result_set:
     query  = '''Select * from USER_INFO where UID=?'''
     user_id = result_set[3] 
@@ -39,12 +42,26 @@ while result_set:
     print(result[0], result[1], result[2], result[3], result[4], result[5])
     img_arr1 = convert.text_to_image(result_set[1])
     img_arr2 = convert.text_to_image(result_set[2])
-    plt.imshow(img_arr1)
-    plt.show()
-    input()
-    plt.imshow(img_arr2)
-    plt.show()
-    input()
+    #plt.imshow(img_arr1)
+    #plt.show()
+    #input()
+    #plt.imshow(img_arr2)
+    #plt.show()
+    #input()
     #print(result_set[3])
+    #_,axis = plt.subplots(5, 2)
+    #print(image_number)
+    axis[image_number, 0].figure.set_figheight(10)
+    axis[image_number, 0].figure.set_figwidth(10)
+    axis[image_number,0].imshow(img_arr1)
+    #input()
+    #plt.subplot(1, 2, 2)
+    axis[image_number, 1].figure.set_figheight(10)
+    axis[image_number, 1].figure.set_figwidth(10)
+    axis[image_number,1].imshow(img_arr2)
+    #plt.show()
+    #input()
     result_set = ibm_db.fetch_tuple(statement)
-    
+    #print(axis)
+    image_number = image_number + 1
+plt.show()
