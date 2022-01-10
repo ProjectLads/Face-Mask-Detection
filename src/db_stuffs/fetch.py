@@ -16,7 +16,8 @@ password = "XIho3BxFB7Z4u2Hj"
 username = "nlz47787"
 database = "bludb"
 hostname = '8e359033-a1c9-4643-82ef-8ac06f5107eb.bs2io90l08kqb1od8lcg.databases.appdomain.cloud'
-path =  'C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/certificate.crt'
+#path =  'C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/certificate.crt'
+path = '/home/rupam/Face-Mask-Detection/src/db_stuffs/certificate.crt'
 port = 30120
 
 uri =f"DATABASE={database};HOSTNAME={hostname};PORT={port};SECURITY=SSL;SSLServerCertificate={path};UID={username};PWD={password}" 

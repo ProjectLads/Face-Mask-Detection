@@ -3,18 +3,28 @@ from PIL import Image as image
 import base64
 import requests 
 import os 
+import matplotlib.pyplot as plt
+import numpy as np
+import cv2 
+
 
 def face_match(image1 , image2 , apikey):
     PATH1 = os.getcwd() + "/tmp/image1.jpeg"
     PATH2 = os.getcwd() + "/tmp/image2.jpeg"
 
-    image.fromarray(image1).save(PATH1)
-    image.fromarray(image2).save(PATH2)
 
-    
+    image.fromarray(image1.astype(np.uint8)).save(PATH1 , quality = 100)
+    image.fromarray(image2.astype(np.uint8)).save(PATH2 , quality = 100)
+
     img1 = open(PATH1 , 'rb').read()
     img2 = open(PATH2 , 'rb').read()
 
+    image3 = cv2.imread(PATH2)
+    
+    plt.imshow(image3)
+    plt.show()
+
+    input(' > NEXT -> ')
     
     img1string = base64.b64encode(img1).decode("utf-8")
     img2string = base64.b64encode(img2).decode("utf-8")
@@ -40,18 +50,11 @@ def face_match(image1 , image2 , apikey):
     if resp.status_code == 200 : 
         return True if (resp.json()["confidence"] > 0.50) else False
     else:
-        print(resp.reason)
+        return False
 
 
 
 
 
-
-
-
-
-apikey = "I39243ua8sbTpjaN2632"
-
-print(face_match(img1 , img2 , apikey))
 
 
