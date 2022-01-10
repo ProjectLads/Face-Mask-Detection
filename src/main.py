@@ -1,82 +1,46 @@
-import cv2
-import tensorflow as tf 
-import os
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image 
+import ibm_db 
+import os 
 
-path = 'haarcascade_frontalface_default.xml'
+import tensorflow as tf
+from app import mainloop 
 
-test_model = tf.keras.models.load_model(os.getcwd() + '/models/model_2.h5')
+password = "XIho3BxFB7Z4u2Hj"
+username = "nlz47787"
+database = "bludb"
+hostname = '8e359033-a1c9-4643-82ef-8ac06f5107eb.bs2io90l08kqb1od8lcg.databases.appdomain.cloud'
+#path =  'D:\Projectlads\Face-Mask-Detection\src\db_stuffs\certificate.crt'
+path = "/home/rupam/Face-Mask-Detection/src/db_stuffs/certificate.crt"
+port = 30120
 
-def decode_pred(prob):
-    if prob >= 0.5:
-        return 1
-    else:
-        return 0
-
-cap = cv2.VideoCapture(0)
-if not cap.isOpened():
-    raise IOError("Can't open webcam")
-
-final_images = []
-
-while True:
-    ret, frame = cap.read()
-    faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-
-    Image.fromarray(frame.astype(np.uint8)).save(os.getcwd() + "/db_stuffs/tmp/frame.jpeg" , quality = 100)
-
-    frame = cv2.imread(os.getcwd() + "/db_stuffs/tmp/frame.jpeg")
-
-    os.remove(os.getcwd() + "/db_stuffs/tmp/frame.jpeg")
-            
-    boxes = faceCascade.detectMultiScale(frame, 1.1, 4)
-    for x, y, w, h in boxes:
-        
-        roi_color = frame[y:y+h, x:x+w]
-        faces = faceCascade.detectMultiScale(roi_color)
-        if len(faces) > 0:
-
-            final_image = cv2.resize(roi_color, (224, 224))
-            
-            final_image = np.expand_dims(final_image, axis = 0)
-            final_image = final_image/255.0
-
-            prediction = test_model.predict(final_image)
-            prediction = decode_pred(prediction[0])
-
-            final_images.append((roi_color , prediction))
+uri =f"DATABASE={database};HOSTNAME={hostname};PORT={port};SECURITY=SSL;SSLServerCertificate={path};UID={username};PWD={password}" 
 
 
-            if(prediction == 1):
-                cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 2)
-            else:
-                cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 0, 255), 2)
-        else:
-            final_images.append((roi_color , 'Face not detected'))
+if __name__ == '__main__':
+    
+    conn1 = ibm_db.connect(uri , '' , '')
+
+    import ibm_db_dbi 
+    conn2 = ibm_db_dbi.Connection(conn1)
+
+    print("DB CONNECTED")
+
+    model = tf.keras.models.load_model(os.getcwd() + "/models/model_2.h5")
 
 
-            cv2.rectangle(frame, (x,y), (x+w, y+h), (255 , 0 ,  0), 2)
+
+
+    mainloop(conn1 , model)
+
+
+
+
+
+    ibm_db.close(conn1)
+    print("Connection closed")
 
 
     
-
-    cv2.imshow('Face Mask Detector', frame)
     
 
-    if cv2.waitKey(1) == 13:
-        break
 
-cap.release()
-cv2.destroyAllWindows()
-
-input('CHECK ANALYTICS : ')
-
-for image in final_images:
-
-    plt.imshow(image[0])
-    plt.show()
-    print('Prediction :' , image[1])
-    input()
 
