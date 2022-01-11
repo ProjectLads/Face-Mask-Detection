@@ -1,7 +1,8 @@
 import ibm_db 
-import os
-import uuid 
-import data
+import os 
+
+import tensorflow as tf
+from app import mainloop 
 
 password = "XIho3BxFB7Z4u2Hj"
 username = "nlz47787"
@@ -13,31 +14,33 @@ port = 30120
 
 uri =f"DATABASE={database};HOSTNAME={hostname};PORT={port};SECURITY=SSL;SSLServerCertificate={path};UID={username};PWD={password}" 
 
-try:
+
+if __name__ == '__main__':
+    
     conn1 = ibm_db.connect(uri , '' , '')
-    print("[1]---  Success ----")
 
     import ibm_db_dbi 
     conn2 = ibm_db_dbi.Connection(conn1)
-    print("[2]--- Success ---")
 
-    t = conn2.tables('NLZ47787' , '%')
-    print("---- TABLES ---- ")
-    for table in t:
-        print(table['TABLE_NAME'])
-    
-    data.read_path(conn1, conn2)
-    
-    print("----------------")
+    print("DB CONNECTED")
+
+    model = tf.keras.models.load_model(os.getcwd() + "/models/model_2.h5")
+
+
+
+
+    mainloop(conn1 , model)
+
+
+
+
+
     ibm_db.close(conn1)
     print("Connection closed")
 
 
     
-except Exception as e:
-    import sys    
-    print(e)
-    sys.exit()
+    
 
 
 
