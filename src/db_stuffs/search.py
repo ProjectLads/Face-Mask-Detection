@@ -28,7 +28,7 @@ ibm_db.execute(statement)
 result_set = ibm_db.fetch_tuple(statement)
 
 #PATH = "/home/rupam/Face-Mask-Detection/src/db_stuffs/image1.jpeg"
-PATH = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/image1.jpeg"
+PATH = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/RB.jpeg"
 test_image = cv2.imread(PATH)
 test_image = cv2.resize(detect_face(test_image) , (300 , 300))
 
@@ -79,7 +79,8 @@ if prediction == 0:
     if found:
         print("image found")
         message = '''You haven't worn a mask. Please wear a mask for everyone's safety! Join us: https://meet.google.com/wrh-kdfz-bmf 
-        With regards,ProjectLads'''
+With regards,
+ProjectLads'''
         send_sms(phone_number, message)
     else:
         print("image not found")

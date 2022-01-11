@@ -1,4 +1,4 @@
-import numpy as np ,cv2
+import numpy as np, cv2
 import json 
 
 image_to_text  = lambda image: json.dumps(image.tolist())
