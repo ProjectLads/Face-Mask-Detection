@@ -111,6 +111,11 @@ def main(conn):
     if not cap.isOpened():
         raise IOError("Can't open webcam")
     ret, frame = cap.read()
+    cap.set(11, 1.0)
+    cap.set(6, 70.0)
+    cap.set(7, 30.0)
+    cap.set(1, 1024)
+    cap.set(2, 1024)
     faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
     #Image.fromarray(frame.astype(np.uint8)).save(os.getcwd() + "/db_stuffs/tmp/frame.jpeg" , quality = 100)
@@ -118,21 +123,30 @@ def main(conn):
     #frame = cv2.imread(os.getcwd() + "/db_stuffs/tmp/frame.jpeg")
 
     #os.remove(os.getcwd() + "/db_stuffs/tmp/frame.jpeg")
-                    
+    
     boxes = faceCascade.detectMultiScale(frame, 1.1, 4)
     for x, y, w, h in boxes:
         roi_color = frame[y:y+h, x:x+w]
         faces = faceCascade.detectMultiScale(roi_color)
-        if len(faces) > 0:
-            message = search(conn, roi_color)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(frame, message, (x, y), font, 1, (255, 0, 0))
+        #if len(faces) > 0:
+        #    message = search(conn, roi_color)
+        #    font = cv2.FONT_HERSHEY_SIMPLEX
+        #    cv2.putText(frame, message, (x, y), font, 1, (255, 0, 0))
+        #else:
+        #    message = "Face not detected"
+        #    font = cv2.FONT_HERSHEY_SIMPLEX
+        #    cv2.putText(frame, message, (x, y), font, 1, (0, 0, 255))
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0))
-
+        plt.imshow(frame)
+        plt.show()
+        input()
     #cv2.imshow('Face Mask Detector', frame)
-    plt.imshow(frame)
-    plt.show()
-    input()
+    #plt.imshow(frame)
+    #plt.show()
+    #input()
 
     cap.release()
     cv2.destroyAllWindows()
+
+
+main("hello")

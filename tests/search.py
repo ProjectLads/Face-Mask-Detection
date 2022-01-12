@@ -13,7 +13,7 @@ password = "XIho3BxFB7Z4u2Hj"
 username = "nlz47787"
 database = "bludb"
 hostname = '8e359033-a1c9-4643-82ef-8ac06f5107eb.bs2io90l08kqb1od8lcg.databases.appdomain.cloud'
-path =  'C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/certificate.crt'
+path =  'C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/certificate.crt'
 
 #path = '/home/rupam/Face-Mask-Detection/src/db_stuffs/certificate.crt'
 port = 30120
@@ -21,18 +21,18 @@ uri =f"DATABASE={database};HOSTNAME={hostname};PORT={port};SECURITY=SSL;SSLServe
 
 
 conn1 = ibm_db.connect(uri , '' , '')
-    
+
 statement = ibm_db.prepare(conn1 , query)
 
 ibm_db.execute(statement)
 result_set = ibm_db.fetch_tuple(statement)
 
 #PATH = "/home/rupam/Face-Mask-Detection/src/db_stuffs/image1.jpeg"
-PATH = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/RB.jpeg"
+PATH = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/RC.jpeg"
 test_image = cv2.imread(PATH)
 test_image = cv2.resize(detect_face(test_image) , (300 , 300))
 
-test_model = tf.keras.models.load_model("C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/models/model_2.h5")
+test_model = tf.keras.models.load_model("C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/webapp/src/models/model_2.h5")
 
 final_image = cv2.resize(test_image, (224, 224))
 final_image = final_image/255.0
@@ -59,8 +59,6 @@ if prediction == 0:
         apikey = "I39243ua8sbTpjaN2632"
     
     
-
-
         if face_match(test_image , img_arr1, apikey) or face_match(test_image , img_arr2 ,apikey):
             statement1 = ibm_db.prepare(conn1 , query)
             ibm_db.execute(statement1, (user_id, ))
