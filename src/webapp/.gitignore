@@ -1,0 +1,5 @@
+.gitattributes
+src/__pycache__/
+venv/
+start
+

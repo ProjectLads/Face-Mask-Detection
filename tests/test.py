@@ -1,8 +1,8 @@
 import requests
 
-with open('mask.jpg' , 'rb') as image:
+with open('unmask.jpg' , 'rb') as image:
     img_file = {'image' : image}
-    result = requests.post('http://127.0.0.1:5000/' , files = img_file)
+    result = requests.post('https://maskpredictor.herokuapp.com/predict' , files = img_file)
 
 print(result.text)
 print('Test Successful')

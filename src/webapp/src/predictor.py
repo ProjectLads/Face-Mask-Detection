@@ -5,6 +5,7 @@ import cv2
 
 class Mask_Predictor():
   def __init__(self , path , size):
+
     self.__model = models.load_model(path)
     self.__size =  size
 
