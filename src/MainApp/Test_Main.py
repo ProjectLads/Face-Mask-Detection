@@ -1,8 +1,8 @@
 import ibm_db 
 import os 
 #import tensorflow as tf
-#from app import mainloop 
-from app1 import main
+from app import mainloop 
+#from app1 import main
 
 
 
@@ -28,12 +28,12 @@ if __name__ == '__main__':
     print("DB CONNECTED")
 
     #model = tf.keras.models.load_model(os.getcwd() + "/models/model_2.h5")
+    model = "message"
 
 
 
-
-    #mainloop(conn1 , model)
-    main(conn1)
+    mainloop(conn1 , model)
+    #main(conn1)
 
 
 
