@@ -50,10 +50,12 @@ def detect_face(frame):
 
             
 def read_path(conn1, conn2):
-    DATA_DIR = "/home/rupam/Face-Mask-Detection/tests/data.csv"
-    IMAGE_MASK_DIR = "/home/rupam/Face-Mask-Detection/tests/images/mask"
-
-    IMAGE_UNMASK_DIR = "/home/rupam/Face-Mask-Detection/tests/images/withoutMask"
+    #DATA_DIR = "/home/rupam/Face-Mask-Detection/tests/data.csv"
+    DATA_DIR = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/data.csv"
+    #IMAGE_MASK_DIR = "/home/rupam/Face-Mask-Detection/tests/images/mask"
+    IMAGE_MASK_DIR = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/images/mask"
+    IMAGE_UNMASK_DIR = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/images/withoutmask"
+    #IMAGE_UNMASK_DIR = "/home/rupam/Face-Mask-Detection/tests/images/withoutMask"
     info =[]
     image = []
     

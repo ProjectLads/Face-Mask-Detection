@@ -8,7 +8,7 @@ import numpy as np ,cv2
 import json 
 import requests
 import matplotlib.pyplot as plt
-
+import face_recognition
 
 
 image_to_text  = lambda image: json.dumps(image.tolist())
@@ -53,54 +53,75 @@ def search(conn, test_image):
 def face_match(image1 , image2 , apikey):
     #PATH1 = os.getcwd() + "/tmp/image1.jpeg"
     #PATH2 = os.getcwd() + "/tmp/image2.jpeg"
-    PATH1 = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/tmp/image1.jpeg"
-    PATH2 = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/tmp/image2.jpeg"
+    PATH1 = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/MainApp/tmp/image1.jpeg"
+    PATH2 = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/MainApp/tmp/image2.jpeg"
 
 
     Image.fromarray(image1.astype(np.uint8)).save(PATH1 , quality = 100)
     Image.fromarray(image2.astype(np.uint8)).save(PATH2 , quality = 100)
 
-    img1 = open(PATH1 , 'rb').read()
-    img2 = open(PATH2 , 'rb').read()
-
-    image3 = cv2.imread(PATH1)
-    image4 = cv2.imread(PATH2)
-
-    plt.imshow(image3)
-    plt.show()
-
-    input(' > NEXT -> ')
-
-    plt.imshow(image4)
-    plt.show()
-
-    input(' > NEXT -> ')
     
-    img1string = base64.b64encode(img1).decode("utf-8")
-    img2string = base64.b64encode(img2).decode("utf-8")
+    known_image = face_recognition.load_image_file(PATH1)
+    unknown_image = face_recognition.load_image_file(PATH2)
+    #print(known_image)
+    #print(unknown_image)
+    w1 = known_image.shape[0]
+    h1 = known_image.shape[1]
+    w = unknown_image.shape[0]
+    h = unknown_image.shape[1]
+
+    print("Encoding--")
+    encoding_1 = face_recognition.face_encodings(known_image, known_face_locations = [(0, w1, h1, 0)])
+    encoding_2 = face_recognition.face_encodings(unknown_image, known_face_locations = [(0, w, h, 0)])
+    #print(encoding_1)
+    #print(encoding_2)
+
+
+    results = face_recognition.compare_faces([encoding_1[0]], encoding_2[0])
+    print(results[0])
+    return results[0]
+
+    #img1 = open(PATH1 , 'rb').read()
+    #img2 = open(PATH2 , 'rb').read()
+
+    #image3 = cv2.imread(PATH1)
+    #image4 = cv2.imread(PATH2)
+
+    #plt.imshow(image3)
+    #plt.show()
+
+    #input(' > NEXT -> ')
+
+    #plt.imshow(image4)
+    #plt.show()
+
+    #input(' > NEXT -> ')
+    
+    #img1string = base64.b64encode(img1).decode("utf-8")
+    #img2string = base64.b64encode(img2).decode("utf-8")
 
     os.remove(PATH1)
     os.remove(PATH2)
 
-    headers = { 
-        "Content-Type" : "application/json",
+    #headers = { 
+    #    "Content-Type" : "application/json",
 
-        "Subscriptionkey" : apikey ,
+    #    "Subscriptionkey" : apikey ,
 
-        }
-    data1 = {}
+    #    }
+    #data1 = {}
 
-    data1["encoded_image1"]  =  img1string
-    data1["encoded_image2"] =   img2string
+    #data1["encoded_image1"]  =  img1string
+    #data1["encoded_image2"] =   img2string
 
-    url = f'https://faceapi.mxface.ai/api/face/verify'
+    #url = f'https://faceapi.mxface.ai/api/face/verify'
 
 
-    resp = requests.post(url , headers=headers , json=data1)
-    if resp.status_code == 200 : 
-        return True if (resp.json()["confidence"] > 0.50) else False
-    else:
-        return "Poor quality"
+    #resp = requests.post(url , headers=headers , json=data1)
+    #if resp.status_code == 200 : 
+    #    return True if (resp.json()["confidence"] > 0.50) else False
+    #else:
+    #    return "Poor quality"
 
 
 
@@ -129,7 +150,7 @@ def main(conn):
     for x, y, w, h in faces:
         roi_gray = gray[y:y+h, x:x+w]
         roi_color = frame[y:y+h, x:x+w]
-        cv2.rectangle(frame, (x,y), (x+w, y+h), (255, 0, 0), 2)
+        cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 2)
         facess = faceCascade.detectMultiScale(roi_gray)
         if len(facess) == 0:
             print("Face not detected")
@@ -138,7 +159,7 @@ def main(conn):
             #face_roi = roi_color[ey: ey+eh, ex: ex+ew]
             print("Face Detection Success")
             message = search(conn, roi_color)
-            print(message)
+            #print(message)
 
     
     #boxes = faceCascade.detectMultiScale(frame, 1.1, 4)
@@ -151,8 +172,8 @@ def main(conn):
         #    cv2.putText(frame, message, (x, y), font, 1, (255, 0, 0))
         #else:
         #    message = "Face not detected"
-        #    font = cv2.FONT_HERSHEY_SIMPLEX
-        #    cv2.putText(frame, message, (x, y), font, 1, (0, 0, 255))
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(frame, message, (x, y), font, 1, (0, 0, 255))
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0))
         plt.imshow(frame)
         plt.show()
