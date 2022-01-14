@@ -126,19 +126,20 @@ def main(conn):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     #
     faces = faceCascade.detectMultiScale(gray, 1.1, 4)
+    print(faces)
     for x, y, w, h in faces:
         roi_gray = gray[y:y+h, x:x+w]
         roi_color = frame[y:y+h, x:x+w]
         cv2.rectangle(frame, (x,y), (x+w, y+h), (255, 0, 0), 2)
         facess = faceCascade.detectMultiScale(roi_gray)
         if len(facess) == 0:
-            print("Face not detected")
+            message = "Face not detected"
         else:
             #for (ex, ey, ew, eh) in facess:
             #face_roi = roi_color[ey: ey+eh, ex: ex+ew]
-            print("Face Detection Success")
-            message = search(conn, roi_color)
-            print(message)
+            message = "Face Detection Success"
+            #message = search(conn, roi_color)
+           # print(message)
 
     
     #boxes = faceCascade.detectMultiScale(frame, 1.1, 4)
@@ -151,12 +152,15 @@ def main(conn):
         #    cv2.putText(frame, message, (x, y), font, 1, (255, 0, 0))
         #else:
         #    message = "Face not detected"
-        #    font = cv2.FONT_HERSHEY_SIMPLEX
-        #    cv2.putText(frame, message, (x, y), font, 1, (0, 0, 255))
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(frame, message, (x, y), font, 1, (0, 0, 255))
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0))
-        plt.imshow(frame)
+        plt.imshow(roi_color)
         plt.show()
-        input()
+        
+    plt.imshow(frame)
+    plt.show()
+    
     #cv2.imshow('Face Mask Detector', frame)
     #plt.imshow(frame)
     #plt.show()
@@ -166,4 +170,4 @@ def main(conn):
     cv2.destroyAllWindows()
 
 
-#main("hello")
+main("hello")

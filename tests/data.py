@@ -17,7 +17,9 @@ def insert_into_image_table(text1, text2, user_id, conn1):
     
     
     statement = ibm_db.prepare(conn1 , query)
+    print("started")
     ibm_db.execute_many(statement , parameters)
+    print("done")
 
 
 def insert_into_user_table(user_id, name, country_code, phone_number, email_id, address, conn1):
