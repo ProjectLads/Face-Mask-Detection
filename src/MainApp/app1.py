@@ -121,9 +121,29 @@ def main(conn):
     print("hello")
     faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-        #for x, y, w, h in boxes:
-     #   print("hello")
-      #  roi_color = frame[y:y+h, x:x+w]
+    #Image.fromarray(frame.astype(np.uint8)).save(os.getcwd() + "/db_stuffs/tmp/frame.jpeg" , quality = 100)
+
+    #frame = cv2.imread(os.getcwd() + "/db_stuffs/tmp/frame.jpeg")
+
+    #os.remove(os.getcwd() + "/db_stuffs/tmp/frame.jpeg")
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    #
+    faces = faceCascade.detectMultiScale(gray, 1.1, 4)
+    for x, y, w, h in faces:
+        roi_gray = gray[y:y+h, x:x+w]
+        roi_color = frame[y:y+h, x:x+w]
+        cv2.rectangle(frame, (x,y), (x+w, y+h), (255, 0, 0), 2)
+        facess = faceCascade.detectMultiScale(roi_gray)
+        if len(facess) == 0:
+            print("Face not detected")
+        else:
+            #for (ex, ey, ew, eh) in facess:
+            #face_roi = roi_color[ey: ey+eh, ex: ex+ew]
+            print("Face Detection Success")
+    
+    #boxes = faceCascade.detectMultiScale(frame, 1.1, 4)
+    #for x, y, w, h in boxes:
+        #roi_color = frame[y:y+h, x:x+w]
         #faces = faceCascade.detectMultiScale(roi_color)
         #if len(faces) > 0:
         #    message = search(conn, roi_color)
