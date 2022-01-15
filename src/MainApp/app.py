@@ -29,10 +29,10 @@ class Application:
             user_id = result_set[3] 
             img_arr1 = text_to_image(result_set[1])
             img_arr2 = text_to_image(result_set[2])
-                   
+            
             match1 = self.face_match(test_image , img_arr1)
             match2 = self.face_match(test_image , img_arr2)
-                                  
+
             if match1 or match2:
                 statement1 = ibm_db.prepare(conn , query)
                 ibm_db.execute(statement1, (user_id, ))
