@@ -19,9 +19,9 @@ def collect():
 
 def predict():
 
-  image = request.files['image']
-  print(image)
-  image = cv2.imdecode(np.fromfile(image , np.uint8) , cv2.IMREAD_ANYCOLOR)
+  image = request.data
+
+  image = cv2.imdecode(np.fromstring(image , np.uint8) , cv2.IMREAD_ANYCOLOR)
   
   
   pred = mp.get_prediction(image)

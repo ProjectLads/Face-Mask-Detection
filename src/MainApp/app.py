@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import cv2
 import face_recognition
 import json 
-
+import requests
 
 image_to_text  = lambda image: json.dumps(image.tolist())
 text_to_image  = lambda text:  np.array(json.loads(text))
@@ -16,6 +16,8 @@ class Application:
 
     def __init__(self):
         self.config = dict()
+        self.queue  = list()
+        self.itc = 0 
 
     def search(self , conn, test_image):
         query  = '''Select * from USER_IMAGE'''
@@ -74,7 +76,7 @@ class Application:
 
         
        
-    def mainloop(self , conn):
+    def mainloop(self):
         cap = cv2.VideoCapture(0)
         print("started")
         if not cap.isOpened():
@@ -103,13 +105,13 @@ class Application:
                 cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 2)
                 facess = faceCascade.detectMultiScale(roi_gray)
                 if len(facess) == 0:
-                    print("Face not detected")
                     message = "Face not detected"
-                    
                 else:
-                    print("Face Detection Success")
-                    message = self.search(conn, roi_color)
-                    print(message)
+                    message = "Face Detected"
+                    self.queue.append(roi_color)
+
+                #print(message)
+                    
                 font = cv2.FONT_HERSHEY_SIMPLEX
                 cv2.putText(frame, message, (x, y), font, 1, (0, 0, 255))
                 
@@ -124,8 +126,33 @@ class Application:
 
         cap.release()
         cv2.destroyAllWindows()
+
+    def loop(self , conn):
+
+        while self.itc == 0:
+            if len(self.queue) > 0:
+                face = self.queue.pop(0)
+                result = requests.post(self.config["MODEL_URL"] , data = cv2.imencode('.jpeg' , face)[1].tobytes())
+
+                d = json.loads(result.text)
+                
+                
+                if d["prediction"] == 0:
+                    print("no mask")
+                    message = self.search(conn , face)
+                    if message != "Face not found" :
+                        print(f"{message} has not worn a mask")
+                    else:
+                        print(message)
+            
+
+
+
+
             
     def run(self):
+
+
         
         username = self.config["USER"]
         password = self.config["PASSWORD"]
@@ -143,7 +170,17 @@ class Application:
         uri =f"DATABASE={database};HOSTNAME={hostname};PORT={port};SECURITY=SSL;SSLServerCertificate={path};UID={username};PWD={password}"      
         conn = ibm_db.connect(uri , '' , '')
 
-        self.mainloop(conn)
+        import threading 
+
+        t1 = threading.Thread(target = self.loop , args = (conn , ))
+        
+        t1.start()
+
+        self.mainloop()
+
+        self.itc = 1 
+
+        t1.join()
 
         ibm_db.close(conn)
 

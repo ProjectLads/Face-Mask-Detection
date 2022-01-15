@@ -1,8 +1,12 @@
 import requests
+import cv2 
 
-with open('image1.jpeg' , 'rb') as image:
-    img_file = {'image' : image}
-    result = requests.post('https://maskpredictor.herokuapp.com/predict' , files = img_file)
+img = cv2.imread('unmask.jpg')
+
+_ , img = cv2.imencode('.jpeg' , img)
+
+model_url = "http://192.168.29.231:5000/predict"
+result = requests.post(model_url , data = img.tobytes())
 
 print(result.text)
 print('Test Successful')
