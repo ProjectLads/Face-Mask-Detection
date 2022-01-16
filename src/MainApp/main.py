@@ -1,6 +1,5 @@
+
 from app import Application 
-
-
 
 
 if __name__ == '__main__':
@@ -22,7 +21,5 @@ if __name__ == '__main__':
     app.config["MODEL_URL"] = "https://maskpredictor.herokuapp.com/predict"
     app.run()
 
-    
-    
 
 
