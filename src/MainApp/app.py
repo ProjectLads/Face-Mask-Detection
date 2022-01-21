@@ -50,11 +50,8 @@ class Application:
                 ibm_db.execute(statement1, (user_id, ))
                 result = ibm_db.fetch_tuple(statement1)
             
-<<<<<<< HEAD
-                return result
-=======
                 return (result[1], result[3])
->>>>>>> db338a7a8f23248a8c7ae2dc726ff84ae1486d11
+
             
             result_set = ibm_db.fetch_tuple(statement)
         
@@ -85,11 +82,7 @@ class Application:
         os.remove(PATH2)
 
 
-<<<<<<< HEAD
-        results = face_recognition.compare_faces([encoding_1[0]], encoding_2[0] , tolerance=0.4)
-=======
         results = face_recognition.compare_faces([encoding_1[0]], encoding_2[0], tolerance=0.5)
->>>>>>> db338a7a8f23248a8c7ae2dc726ff84ae1486d11
         
         
         return results[0]
@@ -148,7 +141,7 @@ class Application:
                 cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0))
         
             
-            cv2.imshow('Mask-Inspector 🕵️', frame)
+            cv2.imshow('Mask-Inspector', frame)
         
 
             if cv2.waitKey(1) == 13:
