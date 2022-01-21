@@ -31,7 +31,6 @@ if __name__ == '__main__':
     ROOT = os.getcwd()
 
     
-    
     app.config["CREDENTIALS"] = ROOT + PATH["credentials"][platform_name]
     
     app.config["CERTIFICATE"] = ROOT + PATH["certificate"][platform_name]
@@ -45,7 +44,5 @@ if __name__ == '__main__':
     
     app.run()
 
-    
-    
 
 

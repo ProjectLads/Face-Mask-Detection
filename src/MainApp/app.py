@@ -41,16 +41,20 @@ class Application:
             user_id = result_set[3] 
             img_arr1 = text_to_image(result_set[1])
             img_arr2 = text_to_image(result_set[2])
-                   
+            
             match1 = self.face_match(test_image , img_arr1)
             match2 = self.face_match(test_image , img_arr2)
-                                  
+
             if match1 or match2:
                 statement1 = ibm_db.prepare(conn , query)
                 ibm_db.execute(statement1, (user_id, ))
                 result = ibm_db.fetch_tuple(statement1)
             
+<<<<<<< HEAD
                 return result
+=======
+                return (result[1], result[3])
+>>>>>>> db338a7a8f23248a8c7ae2dc726ff84ae1486d11
             
             result_set = ibm_db.fetch_tuple(statement)
         
@@ -81,13 +85,27 @@ class Application:
         os.remove(PATH2)
 
 
+<<<<<<< HEAD
         results = face_recognition.compare_faces([encoding_1[0]], encoding_2[0] , tolerance=0.4)
+=======
+        results = face_recognition.compare_faces([encoding_1[0]], encoding_2[0], tolerance=0.5)
+>>>>>>> db338a7a8f23248a8c7ae2dc726ff84ae1486d11
         
         
         return results[0]
 
-        
-       
+    
+    def send_sms(self, phone_number, message):
+        url = f"https://www.fast2sms.com/dev/bulkV2?authorization=XqTFcAC4MktpQsSyKEnvPeOwjB51rhdR78YNDWVHg6bzIuo9fJNhi0OcLFJIV3sndbty42mEZ5XrHfpg&route=v3&sender_id=TXTIND&message={message}&language=english&flash=0&numbers={phone_number}"
+        resp = requests.get(url)
+        try:
+            if resp.status_code != 200:
+                print(resp.content)
+                raise Exception("Something must have went wrong with SMS Service trial. Please Check")
+        except Exception as e :
+            pass
+    
+    
     def mainloop(self):
         cap = cv2.VideoCapture(0)
         print("started")
@@ -130,7 +148,7 @@ class Application:
                 cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0))
         
             
-            cv2.imshow('Mask-Inspector', frame)
+            cv2.imshow('Mask-Inspector 🕵️', frame)
         
 
             if cv2.waitKey(1) == 13:
@@ -158,10 +176,12 @@ class Application:
 
                     message = self.search(conn , face)
                     if message != "Face not found" :
-                        print(f"{message[1]} has not worn a mask")
-                        self.send_sms(message[3] , "You have not worn a mask")
-                        
-                        self.itc = 1 
+                        print(f"{message[0]} has not worn a mask")
+                        msg = '''Masks are an urgency. We found you are not wearing one. You are requested to wear the mask or you will be fined. 
+With regards,
+ProjectLads'''
+                        self.send_sms(message[1], msg)
+                        self.itc = 1
                     else:
                         print(message)
                 else:
