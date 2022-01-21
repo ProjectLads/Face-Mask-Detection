@@ -128,3 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 start
+src/MainApp/__pycache__/
+src/MainApp/venv/
+src/MainApp/database
+
