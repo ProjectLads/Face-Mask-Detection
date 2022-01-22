@@ -17,7 +17,19 @@ class Application:
     def __init__(self):
         self.config = dict()
         self.queue  = list()
-        self.itc = 0 
+        self.itc = 0
+
+    def send_sms(self , phone_number, message):
+        url = f"https://www.fast2sms.com/dev/bulkV2?authorization=XqTFcAC4MktpQsSyKEnvPeOwjB51rhdR78YNDWVHg6bzIuo9fJNhi0OcLFJIV3sndbty42mEZ5XrHfpg&route=v3&sender_id=TXTIND&message={message}&language=english&flash=0&numbers={phone_number}"
+        resp = requests.get(url)
+        try:
+            if resp.status_code != 200:
+                print(resp.content)
+                raise Exception("Something must have went wrong with SMS Service trial. Please Check")
+        except Exception as e :
+            pass
+
+
 
     def search(self , conn, test_image):
         query  = '''Select * from USER_IMAGE'''
@@ -39,6 +51,7 @@ class Application:
                 result = ibm_db.fetch_tuple(statement1)
             
                 return (result[1], result[3])
+
             
             result_set = ibm_db.fetch_tuple(statement)
         
@@ -96,8 +109,8 @@ class Application:
         cap.set(11, 1.0)
         cap.set(6, 70.0)
         cap.set(7, 30.0)
-        cap.set(1, 1024)
-        cap.set(2, 1024)
+        cap.set(1, 500)
+        cap.set(2, 500)
 
         faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         
@@ -106,14 +119,14 @@ class Application:
             
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-            faces = faceCascade.detectMultiScale(gray, 1.1, 4)
+            faces = faceCascade.detectMultiScale(frame, 1.1, 4)
             bottom_message = "Project Lads"
             bottom_x , bottom_y = (frame.shape[0] , frame.shape[1])
             for x, y, w, h in faces:
                 roi_gray = gray[y:y+h, x:x+w]
                 roi_color = frame[y:y+h, x:x+w]
                 cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 2)
-                facess = faceCascade.detectMultiScale(roi_gray)
+                facess = faceCascade.detectMultiScale(roi_color)
                 if len(facess) == 0:
                     message = "Face not detected"
                 else:
@@ -128,7 +141,7 @@ class Application:
                 cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0))
         
             
-            cv2.imshow('Mask-Inspector 🕵️', frame)
+            cv2.imshow('Mask-Inspector', frame)
         
 
             if cv2.waitKey(1) == 13:
@@ -136,6 +149,9 @@ class Application:
 
         cap.release()
         cv2.destroyAllWindows()
+
+    
+
 
     def loop(self , conn):
 
@@ -149,6 +165,8 @@ class Application:
                 
                 if d["prediction"] == 0:
                     print("no mask")
+                    
+
                     message = self.search(conn , face)
                     if message != "Face not found" :
                         print(f"{message[0]} has not worn a mask")
@@ -159,6 +177,8 @@ ProjectLads'''
                         self.itc = 1
                     else:
                         print(message)
+                else:
+                    print("mask")
             
 
 
@@ -167,16 +187,21 @@ ProjectLads'''
             
     def run(self):
 
+        with open(self.config["CREDENTIALS"]) as f:
+            credentials = dict(json.load(f))
+
+
 
         
-        username = self.config["USER"]
-        password = self.config["PASSWORD"]
+        username = credentials['connection']['db2']['authentication']['username']
 
-        database = self.config["DATABASE"]
+        password = credentials['connection']['db2']['authentication']['password']
 
-        hostname = self.config["HOST"]
+        database = credentials['connection']['db2']['database']
 
-        port = self.config["PORT"]
+        hostname = credentials['connection']['db2']['hosts'][0]["hostname"]
+
+        port = credentials['connection']['db2']['hosts'][0]["port"]
 
         path = self.config["CERTIFICATE"]
 
