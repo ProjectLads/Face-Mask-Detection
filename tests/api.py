@@ -20,8 +20,8 @@ def send_sms(phone_number, message):
 def face_match(image1 , image2 , apikey):
     #PATH1 = os.getcwd() + "/tmp/image1.jpeg"
     #PATH2 = os.getcwd() + "/tmp/image2.jpeg"
-    PATH1 = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/tmp/image1.jpeg"
-    PATH2 = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/db_stuffs/tmp/image2.jpeg"
+    PATH1 = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/tmp/image1.jpeg"
+    PATH2 = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/tmp/image2.jpeg"
 
 
     image.fromarray(image1.astype(np.uint8)).save(PATH1 , quality = 100)
@@ -32,10 +32,10 @@ def face_match(image1 , image2 , apikey):
 
     image3 = cv2.imread(PATH2)
     
-    plt.imshow(image3)
-    plt.show()
+    #plt.imshow(image3)
+    #plt.show()
 
-    input(' > NEXT -> ')
+    #input(' > NEXT -> ')
     
     img1string = base64.b64encode(img1).decode("utf-8")
     img2string = base64.b64encode(img2).decode("utf-8")

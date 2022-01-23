@@ -1,31 +1,52 @@
 from app import Application 
+import platform
+import os
 
+PATH = {
+        "credentials" : {
+        "Windows" :"//database//credentials.json" ,  
+        "Linux" : "/database/credentials.json"
+        } , 
 
+        "certificate" : {
+            "Windows" : "//database//certificate.crt" , 
+            "Linux" :"/database/certificate.crt" 
+
+        } , 
+
+        "temp" : {
+
+            "Windows" : "//tmp//" , 
+
+            "Linux" :"/tmp/" 
+        }
+
+}
 
 
 if __name__ == '__main__':
     app = Application()
-    
-    app.config["USER"] = "nlz47787"
-    app.config["PASSWORD"] = "XIho3BxFB7Z4u2Hj"
-    app.config["DATABASE"] = "bludb"
 
-    app.config["HOST"] = '8e359033-a1c9-4643-82ef-8ac06f5107eb.bs2io90l08kqb1od8lcg.databases.appdomain.cloud'
-    app.config["PORT"] = 30120
-    
-    #app.config["CERTIFICATE"] = "/home/rupam/Face-Mask-Detection/tests/certificate.crt"
-    #app.config["TEMP"] = "/home/rupam/Face-Mask-Detection/src/MainApp/tmp/"
+    platform_name = platform.system()
+    ROOT = os.getcwd()
 
-    #app.config["CERTIFICATE"] = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/certificate.crt"
-    #app.config["TEMP"] = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/MainApp/tmp/"
+    #change the path according to derectory
     
     app.config["CERTIFICATE"] = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/certificate.crt"
     app.config["TEMP"] = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/MainApp/tmp/"
     
+    app.config["CREDENTIALS"] = ROOT + PATH["credentials"][platform_name]
+    
+    app.config["CERTIFICATE"] = ROOT + PATH["certificate"][platform_name]
+
+
+    app.config["TEMP"] =   ROOT + PATH["temp"][platform_name]
+
+
     app.config["MODEL_URL"] = "https://maskpredictor.herokuapp.com/predict"
-    app.run()
 
     
-    
+    app.run()
+
 
 
