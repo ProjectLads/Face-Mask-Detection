@@ -16,6 +16,9 @@ if __name__ == '__main__':
     #app.config["CERTIFICATE"] = "/home/rupam/Face-Mask-Detection/tests/certificate.crt"
     #app.config["TEMP"] = "/home/rupam/Face-Mask-Detection/src/MainApp/tmp/"
 
+    #app.config["CERTIFICATE"] = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/certificate.crt"
+    #app.config["TEMP"] = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/MainApp/tmp/"
+    
     app.config["CERTIFICATE"] = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/certificate.crt"
     app.config["TEMP"] = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/MainApp/tmp/"
     
