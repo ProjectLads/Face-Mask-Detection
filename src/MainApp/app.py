@@ -1,36 +1,35 @@
+from PySimpleGUI.PySimpleGUI import WIN_CLOSED
 import cv2
 from PIL import Image
 import numpy as np
 import os
-import ibm_db
-import matplotlib.pyplot as plt
+import ibm_db 
 import cv2
 import face_recognition
 import json 
 import requests
+import io 
+from datetime import datetime 
+from cvzone.SelfiSegmentationModule import SelfiSegmentation
+
 
 image_to_text  = lambda image: json.dumps(image.tolist())
 text_to_image  = lambda text:  np.array(json.loads(text))
 
-class Application:
+class Application():
 
     def __init__(self):
+        
+        
+
         self.config = dict()
         self.queue  = list()
         self.itc = 0
 
-    def send_sms(self , phone_number, message):
-        url = f"https://www.fast2sms.com/dev/bulkV2?authorization=XqTFcAC4MktpQsSyKEnvPeOwjB51rhdR78YNDWVHg6bzIuo9fJNhi0OcLFJIV3sndbty42mEZ5XrHfpg&route=v3&sender_id=TXTIND&message={message}&language=english&flash=0&numbers={phone_number}"
-        resp = requests.get(url)
-        try:
-            if resp.status_code != 200:
-                print(resp.content)
-                raise Exception("Something must have went wrong with SMS Service trial. Please Check")
-        except Exception as e :
-            pass
+        
+        
 
-
-
+    
     def search(self , conn, test_image):
         query  = '''Select * from USER_IMAGE'''
         statement = ibm_db.prepare(conn , query)
@@ -97,10 +96,12 @@ class Application:
                 raise Exception("Something must have went wrong with SMS Service trial. Please Check")
         except Exception as e :
             pass
+
     
-    
+
     def mainloop(self):
         cap = cv2.VideoCapture(0)
+        LAST_FRAME_TIME = datetime.now()
         print("started")
         if not cap.isOpened():
             raise IOError("Can't open webcam")
@@ -111,12 +112,29 @@ class Application:
         cap.set(7, 30.0)
         cap.set(1, 500)
         cap.set(2, 500)
+        cap.set(3 , 1024)
+        cap.set(4 , 1024)
 
         faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+       
+        segmentor = SelfiSegmentation()
+        solid_bg = cv2.imread('solid.jpg')
+        solid_bg = cv2.resize(solid_bg , (640 , 480))
+
+
+
         
         while self.itc == 0:
             ret, frame = cap.read()
+            FRAME_TIME = datetime.now()
+
             
+           
+            
+            frame = segmentor.removeBG(frame , solid_bg , threshold=0.8)
+
+
+                        
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
             faces = faceCascade.detectMultiScale(frame, 1.1, 4)
@@ -131,7 +149,8 @@ class Application:
                     message = "Face not detected"
                 else:
                     message = "Face Detected"
-                    self.queue.append(roi_color)
+                    if (FRAME_TIME - LAST_FRAME_TIME).total_seconds() > 1 : 
+                        self.queue.append((roi_color , FRAME_TIME))
 
                 #print(message)
                     
@@ -157,7 +176,8 @@ class Application:
 
         while self.itc == 0:
             if len(self.queue) > 0:
-                face = self.queue.pop(0)
+                face  , time = self.queue.pop(0)
+                print("TIME_OF_FACE  : " , time)
                 result = requests.post(self.config["MODEL_URL"] , data = cv2.imencode('.jpeg' , face)[1].tobytes())
 
                 d = json.loads(result.text)
@@ -180,12 +200,90 @@ ProjectLads'''
                 else:
                     print("mask")
             
+    
+    def gui_loop(self):
+        import PySimpleGUI as pygui
+
+        cap = cv2.VideoCapture(0)
+        print("started")
+        if not cap.isOpened():
+            raise IOError("Can't open webcam")
+
+
+        cap.set(11, 1.0)
+        cap.set(6, 70.0)
+        cap.set(7, 30.0)
+        cap.set(1, 500)
+        cap.set(2, 500)
+
+        faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        window = pygui.Window(title="test" , layout=[[pygui.Image(key='image') , pygui.Button(button_text="X")]] , finalize=True)
+
+        
+        
+            
+            
+
+
+            
+        while self.itc == 0:
+            event , _ = window._ReadNonBlocking()
+            print(event)
+
+            if event == 'X':
+                break
+
+            ret, frame = cap.read() 
+            boxes = faceCascade.detectMultiScale(frame) 
+            for (x , y , w ,h) in boxes:
+                roi_color = frame[y:y+h, x:x+w]
+                
+                faces = faceCascade.detectMultiScale(roi_color)
+
+                if len(faces) > 0:
+                    cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 2)
+                    self.queue.append(roi_color)
+                    
+                    
+                else:
+                    cv2.rectangle(frame, (x,y), (x+w, y+h), (255,0 , 0), 2)
+
+                    
+
+
+
+
+
+            frame = Image.fromarray(frame)
+
+            in_memory = io.BytesIO()
+
+            frame.save(in_memory , format='PNG')
+
+            output = in_memory.getvalue()
+
+            window.find_element('image').Update(output)
+
+                            
+    
+
+                        
+            
+
+        
+        
+         
+        
+    
+    
+
 
 
 
 
             
-    def run(self):
+
+    def run(self , op):
 
         with open(self.config["CREDENTIALS"]) as f:
             credentials = dict(json.load(f))
@@ -209,15 +307,22 @@ ProjectLads'''
 
         uri =f"DATABASE={database};HOSTNAME={hostname};PORT={port};SECURITY=SSL;SSLServerCertificate={path};UID={username};PWD={password}"      
         conn = ibm_db.connect(uri , '' , '')
+                
+
+        
 
         import threading 
 
         t1 = threading.Thread(target = self.loop , args = (conn , ))
         
         t1.start()
+        print("hello")
 
-        self.mainloop()
+        self.gui_loop() if len(op) > 1 else self.mainloop()         
 
+    
+
+       
         self.itc = 1 
 
         t1.join()

@@ -13,7 +13,7 @@ password = "XIho3BxFB7Z4u2Hj"
 username = "nlz47787"
 database = "bludb"
 hostname = '8e359033-a1c9-4643-82ef-8ac06f5107eb.bs2io90l08kqb1od8lcg.databases.appdomain.cloud'
-path =  'C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/certificate.crt'
+path =  '/home/rupam/Face-Mask-Detection/tests/certificate.crt'
 
 #path = '/home/rupam/Face-Mask-Detection/src/db_stuffs/certificate.crt'
 port = 30120
@@ -28,27 +28,10 @@ ibm_db.execute(statement)
 result_set = ibm_db.fetch_tuple(statement)
 
 #PATH = "/home/rupam/Face-Mask-Detection/src/db_stuffs/image1.jpeg"
-PATH = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/RC.jpeg"
+PATH = "/home/rupam/Face-Mask-Detection/tests/test.jpeg"
 test_image = cv2.imread(PATH)
 test_image = cv2.resize(detect_face(test_image) , (300 , 300))
-
-test_model = tf.keras.models.load_model("C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/webapp/src/models/model_2.h5")
-
-final_image = cv2.resize(test_image, (224, 224))
-final_image = final_image/255.0
-#plt.imshow(final_image)
-#plt.show()
-final_image = np.expand_dims(final_image, axis = 0)
-#final_image = final_image/255.0
-
-
-prediction = test_model.predict(final_image)
-prediction = decode_pred(prediction[0])
-
-if prediction == 0:
-    print("No mask")
-else:
-    print("Mask")
+prediction = 0 
 
 if prediction == 0:
     while result_set:
