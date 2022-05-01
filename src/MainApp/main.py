@@ -14,6 +14,10 @@ separator = {"Windows" : "\\" , "Linux" : "/"}
 
 if __name__ == '__main__':
 
+    #change the path according to derectory
+    
+    app.config["CERTIFICATE"] = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/certificate.crt"
+    app.config["TEMP"] = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/MainApp/tmp/"
     
     
     

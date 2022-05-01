@@ -20,9 +20,10 @@ def send_sms(phone_number, message):
 def face_match(image1 , image2 , apikey):
     #PATH1 = os.getcwd() + "/tmp/image1.jpeg"
     #PATH2 = os.getcwd() + "/tmp/image2.jpeg"
+
     PATH1 = "/home/rupam/Face-Mask-Detection/src/MainApp/tmp/image1.jpeg"
     PATH2 = "/home/rupam/Face-Mask-Detection/src/MainApp/tmp/image2.jpeg"
-
+    
 
     image.fromarray(image1.astype(np.uint8)).save(PATH1 , quality = 100)
     image.fromarray(image2.astype(np.uint8)).save(PATH2 , quality = 100)
@@ -32,10 +33,10 @@ def face_match(image1 , image2 , apikey):
 
     image3 = cv2.imread(PATH2)
     
-    plt.imshow(image3)
-    plt.show()
+    #plt.imshow(image3)
+    #plt.show()
 
-    input(' > NEXT -> ')
+    #input(' > NEXT -> ')
     
     img1string = base64.b64encode(img1).decode("utf-8")
     img2string = base64.b64encode(img2).decode("utf-8")

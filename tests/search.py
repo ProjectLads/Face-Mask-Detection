@@ -7,6 +7,8 @@ from api import face_match, send_sms
 import tensorflow as tf
 import numpy as np
 from testing_main import decode_pred
+import json
+import requests
 
 query  = '''Select * from USER_IMAGE'''
 password = "XIho3BxFB7Z4u2Hj"
@@ -28,12 +30,41 @@ ibm_db.execute(statement)
 result_set = ibm_db.fetch_tuple(statement)
 
 #PATH = "/home/rupam/Face-Mask-Detection/src/db_stuffs/image1.jpeg"
-PATH = "/home/rupam/Face-Mask-Detection/tests/test.jpeg"
+
+PATH = "C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/tests/image1.jpeg"
 test_image = cv2.imread(PATH)
 test_image = cv2.resize(detect_face(test_image) , (300 , 300))
-prediction = 0 
+_ , img = cv2.imencode('.jpeg' , test_image)
+
+#test_model = tf.keras.models.load_model("C:/Users/hp/Desktop/ProjectLads/Face-Mask-Detection/src/webapp/src/models/model_2.h5")
+
+#final_image = cv2.resize(test_image, (224, 224))
+#final_image = final_image/255.0
+#plt.imshow(final_image)
+#plt.show()
+#final_image = np.expand_dims(final_image, axis = 0)
+#final_image = final_image/255.0
+
+
+#prediction = test_model.predict(final_image)
+#prediction = decode_pred(prediction[0])
+
+model_url = "https://maskpredictor.herokuapp.com/predict"
+result = requests.post(model_url , data = img.tobytes())
+d = json.loads(result.text)
+
+
+prediction = d["prediction"]
 
 if prediction == 0:
+    print("No mask")
+else:
+    print("Mask")
+
+
+found = False
+if prediction == 0:
+    print("Please wait..!! Searching the image..!!")
     while result_set:
         query  = '''Select * from USER_INFO where UID=?'''
         user_id = result_set[3] 
@@ -58,11 +89,12 @@ if prediction == 0:
     
 
     if found:
-        print("image found")
-        message = '''You haven't worn a mask. Please wear a mask for everyone's safety! Join us: https://meet.google.com/wrh-kdfz-bmf 
+        print("Image found... Please wait sending the sms..!!")
+        message = '''Masks are an urgency. We found you are not wearing one. You are requested to wear the mask or you will be fined. 
 With regards,
 ProjectLads'''
         send_sms(phone_number, message)
+        print("SMS Sent!")
     else:
         print("image not found")
 
